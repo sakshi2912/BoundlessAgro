@@ -88,7 +88,7 @@
                                         <tr>
 
                                                 <td>pH</td>
-                                                <td><input type="range" min="4" max="5.5" value="" step="0.01"
+                                                <td><input type="range" min="3" max="7" value="" step="0.001"
                                                                 class="slider" id="ph_slider"></td>
                                                 <td><span class="display_vals" id="ph_value"></span></td>
                                                 <td><button type="button" class="btn btn-outline-info" id="phbutton"
@@ -213,7 +213,7 @@
                         var good = "GOOD";
                         var bad = "BAD";
                         document.getElementById("val_ph").innerHTML = val1;
-                        if (val1 > 4.1 && val1 < 5.5) {
+                        if (val1 > 4.5 && val1 < 5.8) {
                                 document.getElementById("status_ph").innerHTML = good;
                                 document.getElementById("status_ph").setAttribute("style", "color:green;")
                         }
