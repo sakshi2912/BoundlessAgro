@@ -48,7 +48,7 @@ while True:
 		"ppm" : round(ppm_value+random.choices([-random.random(),random.random()],weights = ppm_weights)[0],2),
 		"temp" : round(temp_value+random.choices([-random.random(),random.random()],weights = temp_weights)[0],1)}
 		print(gen_dict)	# Take dummy generated value
-		pH_com,ppm_com,temp_com = knn_from_scratch.main_knn(gen_dict['pH'],gen_dict['ppm'],gen_dict['temp'])
+		pH_com,ppm_com,temp_com = knn_model.main_knn(gen_dict['pH'],gen_dict['ppm'],gen_dict['temp'])
 		db.update({"pH":str(pH_com),"ppm":str(ppm_com),"temp":str(temp_com)})
 		db.child("Values").update(gen_dict)
 	sleep(1)
