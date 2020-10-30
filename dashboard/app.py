@@ -11,7 +11,7 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 @app.route("/", methods=["GET", "POST"])
 def main():
 
-    return render_template("home.html")
+    return render_template("home1.html")
 
 
 @app.route("/name", methods=["GET", "POST"])
