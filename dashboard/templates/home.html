@@ -30,7 +30,7 @@
                 }
 
                 .slidecontainer {
-                        width: 50%;
+                        width: 70%;
                 }
 
                 .slider {
@@ -75,7 +75,8 @@
 
         <body>
 
-                <h2> Nutrient levels </h2>
+                <span class="badge badge-pill badge-secondary">Blueberry</span>
+                <h2>Nutrient levels </h2>
                 <br><br>
 
 
@@ -91,16 +92,16 @@
                                                                 class="slider" id="ph_slider"></td>
                                                 <td><span class="display_vals" id="ph_value"></span></td>
                                                 <td><button type="button" class="btn btn-outline-info" id="phbutton"
-                                                                onclick=setpH();>Set</button></td>
+                                                                onclick="writepH()">Set</button></td>
                                         </tr>
                                         <tr>
 
-                                                <td>Temperature </td>
+                                                <td>Temperature (&deg;C) </td>
                                                 <td><input type="range" min="22" max="25" value="" step="0.1"
                                                                 class="slider" id="temp_slider"></td>
                                                 <td><span class="display_vals" id="temp_value"></span></td>
                                                 <td><button type="button" class="btn btn-outline-info" id="tempbutton"
-                                                                onclick=settemp();>Set</button></td>
+                                                                onclick="writetemP()">Set</button></td>
                                         </tr>
                                         <tr>
 
@@ -109,7 +110,7 @@
                                                                 class="slider" id="ppm_slider"></td>
                                                 <td><span class="display_vals" id="ppm_value"> </span></td>
                                                 <td><button type="button" class="btn btn-outline-info" id="ppmbutton"
-                                                                onclick=setppm();>Set</button></td>
+                                                                onclick="writeppm()">Set</button></td>
                                         </tr>
                                 </tbody>
                         </table>
@@ -124,19 +125,19 @@
                                 <tr>
                                         <td>pH</td>
                                         <td id=val_ph>value</td>
-                                        <td id="status_ph">good</td>
+                                        <td id="status_ph"></td>
                                 </tr>
                                 <tr>
 
-                                        <td>temp</td>
+                                        <td>Temperature(&deg;C)</td>
                                         <td id="val_temp">value</td>
-                                        <td id="status_temp">Good</td>
+                                        <td id="status_temp"></td>
                                 </tr>
                                 <tr>
 
                                         <td>ppm</td>
                                         <td id="val_ppm">value</td>
-                                        <td id="status_ppm">good</td>
+                                        <td id="status_ppm"></td>
                                 </tr>
                         </tbody>
                 </table>
@@ -144,8 +145,9 @@
 
         </body>
         <script>
+
                 var slider = document.getElementById("ph_slider");
-                slider.value = 4;
+
                 var output = document.getElementById("ph_value");
                 output.innerHTML = slider.value;
 
@@ -155,17 +157,17 @@
 
 
                 var slider1 = document.getElementById("temp_slider");
-                slider1.value = 22;
+
                 var output1 = document.getElementById("temp_value");
                 output1.innerHTML = slider1.value;
 
                 slider1.oninput = function () {
-                        var newval = this.value + "&deg;" + "C";
-                        output1.innerHTML = newval;
+
+                        output1.innerHTML = this.value;
                 }
 
                 var slider2 = document.getElementById("ppm_slider");
-                slider2.value = 1267;
+
                 var output2 = document.getElementById("ppm_value");
                 output2.innerHTML = slider2.value;
 
@@ -173,6 +175,81 @@
 
                         output2.innerHTML = this.value;
                 }
+
+                var firebaseConfig = {
+                        apiKey: "AIzaSyDHvRKfnEyHYp5YBTU3kQz-p4vtUIacTc8",
+                        authDomain: "hydroponics-195ff.firebaseapp.com",
+                        databaseURL: "https://hydroponics-195ff.firebaseio.com",
+                        projectId: "hydroponics-195ff",
+                        storageBucket: "hydroponics-195ff.appspot.com",
+                        messagingSenderId: "663121661536",
+                        appId: "1:663121661536:web:8e41b89b5794284c8dfd05",
+                        measurementId: "G-3WFT4BE3EJ"
+                };
+
+                firebase.initializeApp(firebaseConfig);
+                firebase.analytics();
+                var database = firebase.database().ref('Values/');
+                function writepH() {
+                        database.update({
+                                pH: document.getElementById("ph_value").innerHTML,
+                        });
+                }
+                function writeppm() {
+                        database.update({
+                                ppm: document.getElementById("ppm_value").innerHTML,
+                        });
+                }
+                function writetemP() {
+                        database.update({
+                                temp: document.getElementById("temp_value").innerHTML
+                        });
+                }
+                database.on('value', function (snapshot) {
+
+                        var val3 = snapshot.val().ppm;
+                        var val2 = snapshot.val().temp;
+                        var val1 = snapshot.val().pH;
+                        var good = "GOOD";
+                        var bad = "BAD";
+                        document.getElementById("val_ph").innerHTML = val1;
+                        if (val1 > 4.1 && val1 < 5.5) {
+                                document.getElementById("status_ph").innerHTML = good;
+                                document.getElementById("status_ph").setAttribute("style", "color:green;")
+                        }
+                        else {
+                                document.getElementById("status_ph").innerHTML = bad;
+                                document.getElementById("status_ph").setAttribute("style", "color:red;")
+                        }
+                        slider.value = val1;
+
+                        document.getElementById("val_temp").innerHTML = val2;
+                        if (val2 > 22 && val2 < 24) {
+                                document.getElementById("status_temp").innerHTML = good;
+                                document.getElementById("status_temp").setAttribute("style", "color:green;")
+                        }
+                        else {
+                                document.getElementById("status_temp").innerHTML = bad;
+                                document.getElementById("status_temp").setAttribute("style", "color:red;")
+                        }
+                        slider1.value = val2;
+                        document.getElementById("val_ppm").innerHTML = val3;
+                        if (val3 > 1260 && val3 < 1360) {
+                                document.getElementById("status_ppm").innerHTML = good;
+                                document.getElementById("status_ppm").setAttribute("style", "color:green;")
+
+                        }
+                        else {
+                                document.getElementById("status_ppm").innerHTML = bad;
+                                document.getElementById("status_ppm").setAttribute("style", "color:red;")
+                        }
+                        slider2.value = val3;
+
+
+                });
+
+
+
         </script>
         <!--
  <script>
