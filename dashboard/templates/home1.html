@@ -1,0 +1,412 @@
+<html>
+
+        <head>
+                <title>Agro</title>
+
+                <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+                        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+                        crossorigin="anonymous">
+                <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+                        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+                        crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                        crossorigin="anonymous"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+                        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                        crossorigin="anonymous"></script>
+                <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-analytics.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-auth.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
+                <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+        </head>
+        <style>
+                body {
+                        margin-left: 2%;
+                        margin-top: 2%;
+                }
+
+                .slidecontainer {
+                        width: 70%;
+                }
+
+                .slider {
+                        -webkit-appearance: none;
+                        width: 100%;
+                        height: 15px;
+                        border-radius: 5px;
+                        background: #d3d3d3;
+                        outline: none;
+                        opacity: 0.7;
+                        -webkit-transition: .2s;
+                        transition: opacity .2s;
+
+                }
+
+                .slider:hover {
+                        opacity: 1;
+                }
+
+                .slider::-webkit-slider-thumb {
+                        -webkit-appearance: none;
+                        appearance: none;
+                        width: 25px;
+                        height: 25px;
+                        border-radius: 50%;
+                        background: #3e7dc5;
+                        cursor: pointer;
+                }
+
+                .slider::-moz-range-thumb {
+                        width: 25px;
+                        height: 25px;
+                        border-radius: 50%;
+                        background: #4CAF50;
+                        cursor: pointer;
+                }
+
+                .display_vals {
+                        font-size: 35px;
+                }
+                .blinking{
+                animation:blinkingText 1.2s infinite;
+                }
+                @keyframes blinkingText{
+                0%{     color: #FF0000;    }
+                49%{    color: #FF0000; }
+                60%{    color: transparent; }
+                99%{    color:transparent;  }
+                100%{   color: #FF0000;    }
+                }
+        </style>
+
+        <body>
+
+                <span class="badge badge-pill badge-secondary">Blueberry</span>
+                <h2>Nutrient levels </h2>
+                <br><br>
+
+
+                <div class="slidecontainer">
+
+                        <table class="table">
+
+                                <tbody>
+                                        <tr>
+
+                                                <td>pH</td>
+                                                <td><input type="range" min="3" max="7" value="" step="0.001"
+                                                                class="slider" id="ph_slider"></td>
+                                                <td><span class="display_vals" id="ph_value"></span></td>
+                                                <td><button type="button" class="btn btn-outline-info" id="phbutton"
+                                                                onclick="writepH()">Set</button></td>
+                                        </tr>
+                                        <tr>
+
+                                                <td>Temperature (&deg;C) </td>
+                                                <td><input type="range" min="22" max="25" value="" step="0.1"
+                                                                class="slider" id="temp_slider"></td>
+                                                <td><span class="display_vals" id="temp_value"></span></td>
+                                                <td><button type="button" class="btn btn-outline-info" id="tempbutton"
+                                                                onclick="writetemP()">Set</button></td>
+                                        </tr>
+                                        <tr>
+
+                                                <td>ppm</td>
+                                                <td><input type="range" min="1260" max="1360" value="" step="0.01"
+                                                                class="slider" id="ppm_slider"></td>
+                                                <td><span class="display_vals" id="ppm_value"> </span></td>
+                                                <td><button type="button" class="btn btn-outline-info" id="ppmbutton"
+                                                                onclick="writeppm()">Set</button></td>
+                                        </tr>
+                                </tbody>
+                        </table>
+                </div>
+
+                <h2> Status</h2>
+                <br>
+
+                <table class="table d-flex justify-content-start">
+
+                        <tbody>
+                                <tr>
+                                        <td>pH</td>
+                                        <td id=val_ph>value</td>
+                                        <td id="status_ph"></td>
+                                </tr>
+                                <tr>
+
+                                        <td>Temperature(&deg;C)</td>
+                                        <td id="val_temp">value</td>
+                                        <td id="status_temp"></td>
+                                </tr>
+                                <tr>
+
+                                        <td>ppm</td>
+                                        <td id="val_ppm">value</td>
+                                        <td id="status_ppm"></td>
+                                </tr>
+                        </tbody>
+                </table>
+
+
+        </body>
+        <script>
+
+                var slider = document.getElementById("ph_slider");
+
+                var output = document.getElementById("ph_value");
+                output.innerHTML = slider.value;
+
+                slider.oninput = function () {
+                        output.innerHTML = this.value;
+                }
+
+
+                var slider1 = document.getElementById("temp_slider");
+
+                var output1 = document.getElementById("temp_value");
+                output1.innerHTML = slider1.value;
+
+                slider1.oninput = function () {
+
+                        output1.innerHTML = this.value;
+                }
+
+                var slider2 = document.getElementById("ppm_slider");
+
+                var output2 = document.getElementById("ppm_value");
+                output2.innerHTML = slider2.value;
+
+                slider2.oninput = function () {
+
+                        output2.innerHTML = this.value;
+                }
+
+                var firebaseConfig = {
+                        apiKey: "AIzaSyDHvRKfnEyHYp5YBTU3kQz-p4vtUIacTc8",
+                        authDomain: "hydroponics-195ff.firebaseapp.com",
+                        databaseURL: "https://hydroponics-195ff.firebaseio.com",
+                        projectId: "hydroponics-195ff",
+                        storageBucket: "hydroponics-195ff.appspot.com",
+                        messagingSenderId: "663121661536",
+                        appId: "1:663121661536:web:8e41b89b5794284c8dfd05",
+                        measurementId: "G-3WFT4BE3EJ"
+                };
+
+                firebase.initializeApp(firebaseConfig);
+                firebase.analytics();
+                var database = firebase.database().ref('Values/');
+                var db=firebase.database().ref('Prediction/');
+                function writepH() {
+                        database.update({
+                                pH: document.getElementById("ph_value").innerHTML,
+                        });
+                }
+                function writeppm() {
+                        database.update({
+                                ppm: document.getElementById("ppm_value").innerHTML,
+                        });
+                }
+                function writetemP() {
+                        database.update({
+                                temp: document.getElementById("temp_value").innerHTML
+                        });
+                }
+                db.on('value',function(snapshot){
+                        var v1=snapshot.val().pH;
+                        var v2=snapshot.val().ppm;
+                        var v3=snapshot.val().temp;
+                
+                database.on('value', function (snapshot) {
+
+                        var val3 = snapshot.val().ppm;
+                        var val2 = snapshot.val().temp;
+                        var val1 = snapshot.val().pH;
+                        var good = "NORMAL";
+                        //var bad = "BAD";
+                        document.getElementById("val_ph").innerHTML = val1;
+                        if (v1==0) {
+                                document.getElementById("status_ph").innerHTML = good;
+                                document.getElementById("status_ph").setAttribute("style", "color:green;")
+                                document.getElementById("status_ph").className="normal";
+                        }
+                        if(v1==1) {
+                                document.getElementById("status_ph").innerHTML = "PH UP";
+                                document.getElementById("status_ph").setAttribute("style", "color:red;")
+                                document.getElementById("status_ph").className="blinking";
+                        }
+                        if(v1==2) {
+                                document.getElementById("status_ph").innerHTML = "PH DOWN";
+                                document.getElementById("status_ph").setAttribute("style", "color:red;")
+                                document.getElementById("status_ph").className="blinking";
+                        }
+                        slider.value = val1;
+
+                        document.getElementById("val_temp").innerHTML = val2;
+                        if (v2==0) {
+                                document.getElementById("status_temp").innerHTML = good;
+                                document.getElementById("status_temp").setAttribute("style", "color:green;")
+                                document.getElementById("status_temp").className="normal";
+                        }
+                        if(v2==1) {
+                                document.getElementById("status_temp").innerHTML = "HEATER ON";
+                                document.getElementById("status_temp").setAttribute("style", "color:red;")
+                                document.getElementById("status_temp").className="blinking";
+                        }
+                        if(v2==2) {
+                                document.getElementById("status_temp").innerHTML = "COOLER ON";
+                                document.getElementById("status_temp").setAttribute("style", "color:red;")
+                                document.getElementById("status_temp").className="blinking";
+                        }
+                        slider1.value = val2;
+                        document.getElementById("val_ppm").innerHTML = val3;
+                        if (v3==0) {
+                                document.getElementById("status_ppm").innerHTML = good;
+                                document.getElementById("status_ppm").setAttribute("style", "color:green;");
+                                document.getElementById("status_ppm").className="normal";
+                        }
+                        if(v3==1) {
+                                document.getElementById("status_ppm").innerHTML = "PPM UP";
+                                document.getElementById("status_ppm").setAttribute("style", "color:red;");
+                                document.getElementById("status_ppm").className="blinking";
+                        }
+                        if(v3==2) {
+                                document.getElementById("status_ppm").innerHTML = "PPM DOWN";
+                                document.getElementById("status_ppm").setAttribute("style", "color:red;")
+                                document.getElementById("status_ppm").className="blinking";
+                        }
+                        slider2.value = val3;
+
+
+                });
+
+        });
+
+        </script>
+        <!--
+ <script>
+                var firebaseConfig = {
+                        apiKey: "AIzaSyAI98ZJoecgipZDM5Rv6nfd2dpnudVvVL4",
+                        authDomain: "iiotms.firebaseapp.com",
+                        databaseURL: "https://iiotms.firebaseio.com",
+                        projectId: "iiotms",
+                        storageBucket: "iiotms.appspot.com",
+                        messagingSenderId: "221016022893",
+                        appId: "1:221016022893:web:d75d5c4afb3bb819c30464",
+                        measurementId: "G-RXXVCM8J0K"
+                };
+                firebase.initializeApp(firebaseConfig);
+                firebase.analytics();
+                var databaseref = firebase.database().ref('Controls/')
+                var cooler = '/static/images/led-off1.png';
+                var pHup = '/static/images/led-on1.png';
+                var phDown = '/static/images/fan-on.png';
+                var nutritionA = '/static/images/fan-off.png';
+                window.onload = function () {
+                        firebase.database().ref('Controls/').once('value').then(function (snapshot) {
+                                var cooler = (snapshot.val().cooler);
+                                var pHup = (snapshot.val().pHup);
+                                var phDown = (snapshot.val().phDown);
+                                var nutritionA = (snapshot.val().nutritionA);
+                                if (cooler == "OFF") {
+                                        var image = document.getElementById('cooler');
+                                        image.src = cooler;
+                                }
+                                if (cooler == "ON") {
+                                        var image = document.getElementById('cooler');
+                                        image.src = pHup;
+                                }
+                                if (pHup == "ON") {
+                                        var image = document.getElementById('pHup');
+                                        image.src = pHup;
+                                }
+                                if (pHup == "OFF") {
+                                        var image = document.getElementById('pHup');
+                                        image.src = cooler;
+                                }
+                                if (phDown == "ON") {
+                                        var image = document.getElementById('phDown');
+                                        image.src = phDown;
+                                }
+                                if (phDown == "OFF") {
+                                        var image = document.getElementById('phDown');
+                                        image.src = nutritionA;
+                                }
+                                if (nutritionA == "ON") {
+                                        var image = document.getElementById('nutritionA');
+                                        image.src = phDown;
+                                }
+                                if (nutritionA == "OFF") {
+                                        var image = document.getElementById('nutritionA');
+                                        image.src = nutritionA;
+                                }
+                        });
+                }
+                function changecooler() {
+                        var image = document.getElementById('cooler');
+                        if (image.src.match(cooler)) {
+                                image.src = pHup;
+                                databaseref.update({
+                                        cooler: "ON",
+                                });
+                        }
+                        else {
+                                image.src = cooler;
+                                databaseref.update({
+                                        cooler: "OFF",
+                                });
+                        }
+                }
+                function changepHup() {
+                        var image = document.getElementById('pHup');
+                        if (image.src.match(cooler)) {
+                                image.src = pHup;
+                                databaseref.update({
+                                        pHup: "ON",
+                                });
+                        }
+                        else {
+                                image.src = cooler;
+                                databaseref.update({
+                                        pHup: "OFF",
+                                });
+                        }
+                }
+                function changephDown() {
+                        var image = document.getElementById('phDown');
+                        if (image.src.match(nutritionA)) {
+                                image.src = phDown;
+                                databaseref.update({
+                                        phDown: "ON",
+                                });
+                        }
+                        else {
+                                image.src = nutritionA;
+                                databaseref.update({
+                                        phDown: "OFF",
+                                });
+                        }
+                }
+                function changenutritionA() {
+                        var image = document.getElementById('nutritionA');
+                        if (image.src.match(nutritionA)) {
+                                image.src = phDown;
+                                databaseref.update({
+                                        nutritionA: "ON",
+                                });
+                        }
+                        else {
+                                image.src = nutritionA;
+                                databaseref.update({
+                                        nutritionA: "OFF",
+                                });
+                        }
+                }
+        </script>
+        -->
+
+</html>
