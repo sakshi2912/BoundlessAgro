@@ -168,6 +168,14 @@
                         </tbody>
                 </table>
 
+                <br><br>
+                <div class="card" style="width: 10rem;">
+                        <div class="card-body">
+                                <h6 class="card-title">Predicted pH</h6>
+                                <h4 class="card-subtitle mb-2 text-muted" id="predpH"> </h4>
+                        </div>
+                </div>
+
 
         </body>
         <script>
@@ -236,6 +244,9 @@
                         var v1 = snapshot.val().pH;
                         var v3 = snapshot.val().ppm;
                         var v2 = snapshot.val().temp;
+                        var predpH = snapshot.val().predpH;
+
+                        document.getElementById("predpH").innerHTML = predpH;
 
                         database.on('value', function (snapshot) {
 
