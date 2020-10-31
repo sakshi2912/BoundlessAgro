@@ -5,7 +5,7 @@ import knn_model
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 
-df=pd.read_csv("dataset.csv")
+df=pd.read_csv("blueberry_dataset.csv")
 df.head()
 X1=df[["ppm","temp","ph pump","ppm pump","temp pump"]]
 Y1=df['pH']
