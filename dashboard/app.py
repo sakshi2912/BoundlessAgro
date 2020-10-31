@@ -11,21 +11,10 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 @app.route("/", methods=["GET", "POST"])
 def main():
 
-    return render_template("home1.html")
+    return render_template("home.html")
 
 
-@app.route("/name", methods=["GET", "POST"])
-def name():
-	return render_template("name.html")
 
-@app.route('/data', methods=["GET", "POST"])
-def data():
-	# Data Format
-	# [TIME, Temperature, Humidity]
-	randomnumber = random() * 100
-	response = make_response(json.dumps(randomnumber))
-	response.content_type = 'application/json'
-	return response
 
 if __name__ == "__main__":
     app.run(debug=True)

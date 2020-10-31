@@ -71,6 +71,32 @@
                 .display_vals {
                         font-size: 35px;
                 }
+
+                .blinking {
+                        animation: blinkingText 1.2s infinite;
+                }
+
+                @keyframes blinkingText {
+                        0% {
+                                color: #FF0000;
+                        }
+
+                        49% {
+                                color: #FF0000;
+                        }
+
+                        60% {
+                                color: transparent;
+                        }
+
+                        99% {
+                                color: transparent;
+                        }
+
+                        100% {
+                                color: #FF0000;
+                        }
+                }
         </style>
 
         <body>
@@ -106,7 +132,7 @@
                                         <tr>
 
                                                 <td>ppm</td>
-                                                <td><input type="range" min="1260" max="1360" value="" step="0.01"
+                                                <td><input type="range" min="1180" max="1400" value="" step="0.01"
                                                                 class="slider" id="ppm_slider"></td>
                                                 <td><span class="display_vals" id="ppm_value"> </span></td>
                                                 <td><button type="button" class="btn btn-outline-info" id="ppmbutton"
@@ -141,6 +167,14 @@
                                 </tr>
                         </tbody>
                 </table>
+
+                <br><br>
+                <div class="card" style="width: 10rem;">
+                        <div class="card-body">
+                                <h6 class="card-title">Predicted pH</h6>
+                                <h4 class="card-subtitle mb-2 text-muted" id="predpH"> </h4>
+                        </div>
+                </div>
 
 
         </body>
@@ -190,6 +224,7 @@
                 firebase.initializeApp(firebaseConfig);
                 firebase.analytics();
                 var database = firebase.database().ref('Values/');
+                var db = firebase.database().ref('/');
                 function writepH() {
                         database.update({
                                 pH: document.getElementById("ph_value").innerHTML,
@@ -205,56 +240,85 @@
                                 temp: document.getElementById("temp_value").innerHTML
                         });
                 }
-                database.on('value', function (snapshot) {
+                db.on('value', function (snapshot) {
+                        var v1 = snapshot.val().pH;
+                        var v3 = snapshot.val().ppm;
+                        var v2 = snapshot.val().temp;
+                        var predpH = snapshot.val().predpH;
 
-                        var val3 = snapshot.val().ppm;
-                        var val2 = snapshot.val().temp;
-                        var val1 = snapshot.val().pH;
-                        var good = "GOOD";
-                        var bad = "BAD";
-                        document.getElementById("val_ph").innerHTML = val1;
-                        if (val1 > 4.5 && val1 < 5.8) {
-                                document.getElementById("status_ph").innerHTML = good;
-                                document.getElementById("status_ph").setAttribute("style", "color:green;")
-                        }
-                        else {
-                                document.getElementById("status_ph").innerHTML = bad;
-                                document.getElementById("status_ph").setAttribute("style", "color:red;")
-                        }
-                        slider.value = val1;
+                        document.getElementById("predpH").innerHTML = predpH;
 
-                        document.getElementById("val_temp").innerHTML = val2;
-                        if (val2 > 22 && val2 < 24) {
-                                document.getElementById("status_temp").innerHTML = good;
-                                document.getElementById("status_temp").setAttribute("style", "color:green;")
-                        }
-                        else {
-                                document.getElementById("status_temp").innerHTML = bad;
-                                document.getElementById("status_temp").setAttribute("style", "color:red;")
-                        }
-                        slider1.value = val2;
-                        document.getElementById("val_ppm").innerHTML = val3;
-                        if (val3 > 1260 && val3 < 1360) {
-                                document.getElementById("status_ppm").innerHTML = good;
-                                document.getElementById("status_ppm").setAttribute("style", "color:green;")
+                        database.on('value', function (snapshot) {
 
-                        }
-                        else {
-                                document.getElementById("status_ppm").innerHTML = bad;
-                                document.getElementById("status_ppm").setAttribute("style", "color:red;")
-                        }
-                        slider2.value = val3;
+                                var val3 = snapshot.val().ppm;
+                                var val2 = snapshot.val().temp;
+                                var val1 = snapshot.val().pH;
+                                var good = "NORMAL";
+                                //var bad = "BAD";
+                                document.getElementById("val_ph").innerHTML = val1;
+                                if (v1 == 0) {
+                                        document.getElementById("status_ph").innerHTML = good;
+                                        document.getElementById("status_ph").setAttribute("style", "color:green;")
+                                        document.getElementById("status_ph").className = "normal";
+                                }
+                                if (v1 == 1) {
+                                        document.getElementById("status_ph").innerHTML = "PH UP";
+                                        document.getElementById("status_ph").setAttribute("style", "color:red;")
+                                        document.getElementById("status_ph").className = "blinking";
+                                }
+                                if (v1 == 2) {
+                                        document.getElementById("status_ph").innerHTML = "PH DOWN";
+                                        document.getElementById("status_ph").setAttribute("style", "color:red;")
+                                        document.getElementById("status_ph").className = "blinking";
+                                }
+                                slider.value = val1;
+                                output.innerHTML = val1;
 
+                                document.getElementById("val_temp").innerHTML = val2;
+                                if (v2 == 0) {
+                                        document.getElementById("status_temp").innerHTML = good;
+                                        document.getElementById("status_temp").setAttribute("style", "color:green;")
+                                        document.getElementById("status_temp").className = "normal";
+                                }
+                                if (v2 == 1) {
+                                        document.getElementById("status_temp").innerHTML = "HEATER ON";
+                                        document.getElementById("status_temp").setAttribute("style", "color:red;")
+                                        document.getElementById("status_temp").className = "blinking";
+                                }
+                                if (v2 == 2) {
+                                        document.getElementById("status_temp").innerHTML = "COOLER ON";
+                                        document.getElementById("status_temp").setAttribute("style", "color:red;")
+                                        document.getElementById("status_temp").className = "blinking";
+                                }
+                                slider1.value = val2;
+                                output1.innerHTML = val2;
+                                document.getElementById("val_ppm").innerHTML = val3;
+                                if (v3 == 0) {
+                                        document.getElementById("status_ppm").innerHTML = good;
+                                        document.getElementById("status_ppm").setAttribute("style", "color:green;");
+                                        document.getElementById("status_ppm").className = "normal";
+                                }
+                                if (v3 == 1) {
+                                        document.getElementById("status_ppm").innerHTML = "PPM UP";
+                                        document.getElementById("status_ppm").setAttribute("style", "color:red;");
+                                        document.getElementById("status_ppm").className = "blinking";
+                                }
+                                if (v3 == 2) {
+                                        document.getElementById("status_ppm").innerHTML = "PPM DOWN";
+                                        document.getElementById("status_ppm").setAttribute("style", "color:red;")
+                                        document.getElementById("status_ppm").className = "blinking";
+                                }
+                                slider2.value = val3;
+                                output2.innerHTML = val3;
+
+
+                        });
 
                 });
-
-
 
         </script>
         <!--
  <script>
-
-
                 var firebaseConfig = {
                         apiKey: "AIzaSyAI98ZJoecgipZDM5Rv6nfd2dpnudVvVL4",
                         authDomain: "iiotms.firebaseapp.com",
@@ -265,27 +329,19 @@
                         appId: "1:221016022893:web:d75d5c4afb3bb819c30464",
                         measurementId: "G-RXXVCM8J0K"
                 };
-
                 firebase.initializeApp(firebaseConfig);
                 firebase.analytics();
-
-
-
-
                 var databaseref = firebase.database().ref('Controls/')
-
                 var cooler = '/static/images/led-off1.png';
                 var pHup = '/static/images/led-on1.png';
                 var phDown = '/static/images/fan-on.png';
                 var nutritionA = '/static/images/fan-off.png';
-
                 window.onload = function () {
                         firebase.database().ref('Controls/').once('value').then(function (snapshot) {
                                 var cooler = (snapshot.val().cooler);
                                 var pHup = (snapshot.val().pHup);
                                 var phDown = (snapshot.val().phDown);
                                 var nutritionA = (snapshot.val().nutritionA);
-
                                 if (cooler == "OFF") {
                                         var image = document.getElementById('cooler');
                                         image.src = cooler;
@@ -322,86 +378,65 @@
                 }
                 function changecooler() {
                         var image = document.getElementById('cooler');
-
                         if (image.src.match(cooler)) {
-
                                 image.src = pHup;
                                 databaseref.update({
                                         cooler: "ON",
-
                                 });
                         }
                         else {
-
                                 image.src = cooler;
                                 databaseref.update({
                                         cooler: "OFF",
-
                                 });
                         }
                 }
-
                 function changepHup() {
-
                         var image = document.getElementById('pHup');
-
                         if (image.src.match(cooler)) {
                                 image.src = pHup;
                                 databaseref.update({
                                         pHup: "ON",
-
                                 });
                         }
                         else {
                                 image.src = cooler;
                                 databaseref.update({
                                         pHup: "OFF",
-
                                 });
                         }
                 }
-
                 function changephDown() {
                         var image = document.getElementById('phDown');
-
                         if (image.src.match(nutritionA)) {
                                 image.src = phDown;
                                 databaseref.update({
                                         phDown: "ON",
-
                                 });
                         }
                         else {
                                 image.src = nutritionA;
                                 databaseref.update({
                                         phDown: "OFF",
-
                                 });
                         }
                 }
-
                 function changenutritionA() {
                         var image = document.getElementById('nutritionA');
                         if (image.src.match(nutritionA)) {
                                 image.src = phDown;
                                 databaseref.update({
                                         nutritionA: "ON",
-
                                 });
                         }
                         else {
                                 image.src = nutritionA;
                                 databaseref.update({
                                         nutritionA: "OFF",
-
                                 });
                         }
                 }
-
-
         </script>
-
-
         -->
 
 </html>
