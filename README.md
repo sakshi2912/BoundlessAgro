@@ -31,14 +31,14 @@ It lets the user control pH,ppm and temperature remotely.
 
 2. Run the dashboard
 
-    ``` cd dashboard ```
+    ``` cd dashboard ``` <br>
     ``` python3 app.py ```
     
     Name to the hosted link in the browser.
 
 3. Run the Machine Learning model
 
-    ``` cd ../model ```
+    ``` cd ../model ```<br>
     ``` python3 hydroponics.py ```
 
     The values will start updating to firebase, and can be seen in the dashboard now.
