@@ -71,15 +71,31 @@
                 .display_vals {
                         font-size: 35px;
                 }
-                .blinking{
-                animation:blinkingText 1.2s infinite;
+
+                .blinking {
+                        animation: blinkingText 1.2s infinite;
                 }
-                @keyframes blinkingText{
-                0%{     color: #FF0000;    }
-                49%{    color: #FF0000; }
-                60%{    color: transparent; }
-                99%{    color:transparent;  }
-                100%{   color: #FF0000;    }
+
+                @keyframes blinkingText {
+                        0% {
+                                color: #FF0000;
+                        }
+
+                        49% {
+                                color: #FF0000;
+                        }
+
+                        60% {
+                                color: transparent;
+                        }
+
+                        99% {
+                                color: transparent;
+                        }
+
+                        100% {
+                                color: #FF0000;
+                        }
                 }
         </style>
 
@@ -200,7 +216,7 @@
                 firebase.initializeApp(firebaseConfig);
                 firebase.analytics();
                 var database = firebase.database().ref('Values/');
-                var db=firebase.database().ref('Prediction/');
+                var db = firebase.database().ref('/');
                 function writepH() {
                         database.update({
                                 pH: document.getElementById("ph_value").innerHTML,
@@ -216,75 +232,78 @@
                                 temp: document.getElementById("temp_value").innerHTML
                         });
                 }
-                db.on('value',function(snapshot){
-                        var v1=snapshot.val().pH;
-                        var v2=snapshot.val().ppm;
-                        var v3=snapshot.val().temp;
-                
-                database.on('value', function (snapshot) {
+                db.on('value', function (snapshot) {
+                        var v1 = snapshot.val().pH;
+                        var v3 = snapshot.val().ppm;
+                        var v2 = snapshot.val().temp;
 
-                        var val3 = snapshot.val().ppm;
-                        var val2 = snapshot.val().temp;
-                        var val1 = snapshot.val().pH;
-                        var good = "NORMAL";
-                        //var bad = "BAD";
-                        document.getElementById("val_ph").innerHTML = val1;
-                        if (v1==0) {
-                                document.getElementById("status_ph").innerHTML = good;
-                                document.getElementById("status_ph").setAttribute("style", "color:green;")
-                                document.getElementById("status_ph").className="normal";
-                        }
-                        if(v1==1) {
-                                document.getElementById("status_ph").innerHTML = "PH UP";
-                                document.getElementById("status_ph").setAttribute("style", "color:red;")
-                                document.getElementById("status_ph").className="blinking";
-                        }
-                        if(v1==2) {
-                                document.getElementById("status_ph").innerHTML = "PH DOWN";
-                                document.getElementById("status_ph").setAttribute("style", "color:red;")
-                                document.getElementById("status_ph").className="blinking";
-                        }
-                        slider.value = val1;
+                        database.on('value', function (snapshot) {
 
-                        document.getElementById("val_temp").innerHTML = val2;
-                        if (v2==0) {
-                                document.getElementById("status_temp").innerHTML = good;
-                                document.getElementById("status_temp").setAttribute("style", "color:green;")
-                                document.getElementById("status_temp").className="normal";
-                        }
-                        if(v2==1) {
-                                document.getElementById("status_temp").innerHTML = "HEATER ON";
-                                document.getElementById("status_temp").setAttribute("style", "color:red;")
-                                document.getElementById("status_temp").className="blinking";
-                        }
-                        if(v2==2) {
-                                document.getElementById("status_temp").innerHTML = "COOLER ON";
-                                document.getElementById("status_temp").setAttribute("style", "color:red;")
-                                document.getElementById("status_temp").className="blinking";
-                        }
-                        slider1.value = val2;
-                        document.getElementById("val_ppm").innerHTML = val3;
-                        if (v3==0) {
-                                document.getElementById("status_ppm").innerHTML = good;
-                                document.getElementById("status_ppm").setAttribute("style", "color:green;");
-                                document.getElementById("status_ppm").className="normal";
-                        }
-                        if(v3==1) {
-                                document.getElementById("status_ppm").innerHTML = "PPM UP";
-                                document.getElementById("status_ppm").setAttribute("style", "color:red;");
-                                document.getElementById("status_ppm").className="blinking";
-                        }
-                        if(v3==2) {
-                                document.getElementById("status_ppm").innerHTML = "PPM DOWN";
-                                document.getElementById("status_ppm").setAttribute("style", "color:red;")
-                                document.getElementById("status_ppm").className="blinking";
-                        }
-                        slider2.value = val3;
+                                var val3 = snapshot.val().ppm;
+                                var val2 = snapshot.val().temp;
+                                var val1 = snapshot.val().pH;
+                                var good = "NORMAL";
+                                //var bad = "BAD";
+                                document.getElementById("val_ph").innerHTML = val1;
+                                if (v1 == 0) {
+                                        document.getElementById("status_ph").innerHTML = good;
+                                        document.getElementById("status_ph").setAttribute("style", "color:green;")
+                                        document.getElementById("status_ph").className = "normal";
+                                }
+                                if (v1 == 1) {
+                                        document.getElementById("status_ph").innerHTML = "PH UP";
+                                        document.getElementById("status_ph").setAttribute("style", "color:red;")
+                                        document.getElementById("status_ph").className = "blinking";
+                                }
+                                if (v1 == 2) {
+                                        document.getElementById("status_ph").innerHTML = "PH DOWN";
+                                        document.getElementById("status_ph").setAttribute("style", "color:red;")
+                                        document.getElementById("status_ph").className = "blinking";
+                                }
+                                slider.value = val1;
+                                output.innerHTML = val1;
 
+                                document.getElementById("val_temp").innerHTML = val2;
+                                if (v2 == 0) {
+                                        document.getElementById("status_temp").innerHTML = good;
+                                        document.getElementById("status_temp").setAttribute("style", "color:green;")
+                                        document.getElementById("status_temp").className = "normal";
+                                }
+                                if (v2 == 1) {
+                                        document.getElementById("status_temp").innerHTML = "HEATER ON";
+                                        document.getElementById("status_temp").setAttribute("style", "color:red;")
+                                        document.getElementById("status_temp").className = "blinking";
+                                }
+                                if (v2 == 2) {
+                                        document.getElementById("status_temp").innerHTML = "COOLER ON";
+                                        document.getElementById("status_temp").setAttribute("style", "color:red;")
+                                        document.getElementById("status_temp").className = "blinking";
+                                }
+                                slider1.value = val2;
+                                output1.innerHTML = val2;
+                                document.getElementById("val_ppm").innerHTML = val3;
+                                if (v3 == 0) {
+                                        document.getElementById("status_ppm").innerHTML = good;
+                                        document.getElementById("status_ppm").setAttribute("style", "color:green;");
+                                        document.getElementById("status_ppm").className = "normal";
+                                }
+                                if (v3 == 1) {
+                                        document.getElementById("status_ppm").innerHTML = "PPM UP";
+                                        document.getElementById("status_ppm").setAttribute("style", "color:red;");
+                                        document.getElementById("status_ppm").className = "blinking";
+                                }
+                                if (v3 == 2) {
+                                        document.getElementById("status_ppm").innerHTML = "PPM DOWN";
+                                        document.getElementById("status_ppm").setAttribute("style", "color:red;")
+                                        document.getElementById("status_ppm").className = "blinking";
+                                }
+                                slider2.value = val3;
+                                output2.innerHTML = val3;
+
+
+                        });
 
                 });
-
-        });
 
         </script>
         <!--
