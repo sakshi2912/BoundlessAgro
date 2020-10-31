@@ -52,3 +52,5 @@ It lets the user control pH,ppm and temperature remotely.
     - Make connections on the board as given in the test_actuator.ino file.
     - Compile and upload the code.
 
+## Video Link
+Meraki1 inGenius Video Submission https://youtu.be/vyNDF_NwlIQ
