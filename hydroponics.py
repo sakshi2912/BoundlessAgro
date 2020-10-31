@@ -51,4 +51,3 @@ while True:
 		pH_com,ppm_com,temp_com = knn_model.main_knn(gen_dict['pH'],gen_dict['ppm'],gen_dict['temp'])
 		db.update({"pH":str(pH_com),"ppm":str(ppm_com),"temp":str(temp_com)})
 		db.child("Values").update(gen_dict)
-	sleep(1)
