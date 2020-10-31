@@ -23,6 +23,8 @@ This project uses two machine learning models.
 The dashboard is made using Flask.
 It lets the user control pH,ppm and temperature remotely.
 
+![Dashboard](images.dashboard.png?raw=true "Title")
+
 ## Usage
 
 1. Clone the repository 
